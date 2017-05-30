@@ -1,0 +1,9 @@
+[package]
+
+name = "snake"
+version = "0.0.1"
+authors = [ "Lars Ohrman <larohr@gmail.com>" ]
+build = "build.rs"
+
+[dependencies.sdl2]
+git = "https://github.com/AngryLawyer/rust-sdl2"
