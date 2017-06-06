@@ -66,23 +66,6 @@ pub fn main() {
             }
         }
 
-        {
-            // Update the window title.
-            let mut window = canvas.window_mut();
-
-            let position = window.position();
-            let size = window.size();
-            let title = format!("Hyxorm the Bitener - pos({}x{}), size({}x{}): {}",
-                                position.0,
-                                position.1,
-                                size.0,
-                                size.1,
-                                tick);
-            window.set_title(&title).unwrap();
-
-            tick += 1;
-        }
-
         canvas.set_draw_color(Color::RGB(0, 0, 0));
         canvas.clear();
 
@@ -116,5 +99,7 @@ pub fn main() {
         }
 
         canvas.present();
+
+        tick += 1;
     }
 }

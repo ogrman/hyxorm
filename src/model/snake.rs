@@ -60,7 +60,7 @@ impl Snake {
     pub fn new(x: usize, y: usize, dir: Direction, length: usize) -> Snake {
         let mut segments = vec![SnakeSegment::new(x, y, dir)];
 
-        for i in 1..length {
+        for _ in 1..length {
             segments.push(SnakeSegment::new(x, y, Direction::Still));
         }
 
