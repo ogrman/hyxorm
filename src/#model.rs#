@@ -49,7 +49,9 @@ impl SnakeSegment {
         }
     }
 
-    pub fn move_fwd(&mut self) -> () {
+    pub fn tick(&mut self, blocked: bool) -> () {
+        if blocked { return; }
+
         match self.direction {
             Direction::Up => self.y -= 1,
             Direction::Right => self.x += 1,
@@ -58,8 +60,24 @@ impl SnakeSegment {
         }
     }
 
-    pub fn turn(&mut self, direction: Direction) -> () {
-        self.direction = direction;
+    pub fn turn_left(&mut self) -> () {
+        self.direction =
+            match self.direction {
+                Direction::Up => Direction::Left,
+                Direction::Left => Direction::Down,
+                Direction::Down => Direction::Right,
+                Direction::Right => Direction::Up,
+            };
+    }
+
+    pub fn turn_right(&mut self) -> () {
+        self.direction =
+            match self.direction {
+                Direction::Up => Direction::Right,
+                Direction::Right => Direction::Down,
+                Direction::Down => Direction::Left,
+                Direction::Left => Direction::Up,
+            };
     }
 }
 
@@ -69,3 +87,4 @@ pub enum Direction {
     Down,
     Left,
 }
+

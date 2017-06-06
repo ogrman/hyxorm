@@ -33,15 +33,19 @@ pub fn main() {
                 Event::KeyDown { keycode: Some(Keycode::Escape), .. } =>
                     break 'running,
                 Event::KeyDown { keycode: Some(Keycode::Left), .. } =>
-                    segment.turn_left(),
+                    segment.turn(model::Direction::Left),
                 Event::KeyDown { keycode: Some(Keycode::Right), .. } =>
-                    segment.turn_right(),
+                    segment.turn(model::Direction::Right),
+                Event::KeyDown { keycode: Some(Keycode::Up), .. } =>
+                    segment.turn(model::Direction::Up),
+                Event::KeyDown { keycode: Some(Keycode::Down), .. } =>
+                    segment.turn(model::Direction::Down),
                 _ => {}
             }
         }
 
-        if tick % 20 == 0 {
-            segment.tick(false);
+        if tick % 10 == 0 {
+            segment.move_fwd();
         }
 
         {
