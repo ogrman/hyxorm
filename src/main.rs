@@ -5,13 +5,11 @@ use sdl2::event::Event;
 use sdl2::keyboard::Keycode;
 
 pub fn main() {
-    println!("Hello, world!");
-
     let sdl_context = sdl2::init().unwrap();
     let video_subsystem = sdl_context.video().unwrap();
 
     let window = video_subsystem
-        .window("snake", 800, 600)
+        .window("Hyxorm the Bitener", 800, 600)
         .resizable()
         .build()
         .unwrap();
@@ -33,11 +31,12 @@ pub fn main() {
         }
 
         {
+            // Update the window title.
             let mut window = canvas.window_mut();
 
             let position = window.position();
             let size = window.size();
-            let title = format!("Snake - pos({}x{}), size({}x{}): {}",
+            let title = format!("Hyxorm the Bitener - pos({}x{}), size({}x{}): {}",
                                 position.0,
                                 position.1,
                                 size.0,
@@ -47,9 +46,9 @@ pub fn main() {
 
             tick += 1;
         }
-    }
 
-    canvas.set_draw_color(Color::RGB(0, 0, 0));
-    canvas.clear();
-    canvas.present();
+        canvas.set_draw_color(Color::RGB(0, 0, 0));
+        canvas.clear();
+        canvas.present();
+    }
 }
