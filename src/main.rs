@@ -30,8 +30,8 @@ pub fn main() {
     let mut event_pump = sdl_context.event_pump().unwrap();
 
     let mut world = World::new(16, 16);
-    world.spawn_nugget();
     let mut snake = Snake::new(1, 5, Direction::Right, 5);
+    world.spawn_nugget(&snake);
 
     'running: loop {
         for event in event_pump.poll_iter() {
@@ -54,12 +54,12 @@ pub fn main() {
         if tick % 10 == 0 {
             let np = snake.next_head_pos();
 
-            match world.check_collision(np.x, np.y) {
+            match world.get_cell(np.x, np.y) {
                 CellContent::Nothing => snake.move_fwd(),
                 CellContent::Nugget => {
                     world.consume_nugget();
                     snake.grow();
-                    world.spawn_nugget();
+                    world.spawn_nugget(&snake);
                     snake.move_fwd();
                 },
                 CellContent::Wall => break 'running,
@@ -76,7 +76,7 @@ pub fn main() {
             for x in 0..world.width {
                 let x_pxl = x as i32 * 32;
                 let y_pxl = y as i32 * 32;
-                match world.check_collision(x, y) {
+                match world.get_cell(x, y) {
                     CellContent::Nugget => {
                         canvas.set_draw_color(nugget_color);
                         canvas.fill_rect(Rect::new(x_pxl, y_pxl, 32, 32)).ok();
