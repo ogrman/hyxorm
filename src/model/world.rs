@@ -1,10 +1,9 @@
 use rand;
 
-use model::snake::Snake;
 use model::snake::Position;
+use model::snake::Snake;
 
-#[derive(PartialEq)]
-#[derive(Clone)]
+#[derive(PartialEq, Clone)]
 pub enum CellContent {
     Nothing,
     Wall,
@@ -59,13 +58,13 @@ impl World {
             let y = rand::random::<usize>() % self.height;
 
             let is_nothing = self.get_cell(x, y) == CellContent::Nothing;
-            let is_snake_here = snake.is_here(Position {x: x, y: y});
+            let is_snake_here = snake.is_here(Position { x: x, y: y });
 
             if is_nothing && !is_snake_here {
                 self.cells[index(self.width, x, y)] = CellContent::Nugget;
                 self.nugget_x = x;
                 self.nugget_y = y;
-                break 'l
+                break 'l;
             }
         }
     }

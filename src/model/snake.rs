@@ -20,16 +20,34 @@ impl SnakeSegment {
     }
 
     pub fn pos(&self) -> Position {
-        Position {x: self.x, y: self.y}
+        Position {
+            x: self.x,
+            y: self.y,
+        }
     }
 
     pub fn next_pos(&self) -> Position {
         match self.direction {
-            Direction::Up => Position {x: self.x, y: self.y - 1},
-            Direction::Right => Position {x: self.x + 1, y: self.y},
-            Direction::Down => Position {x: self.x, y: self.y + 1},
-            Direction::Left => Position {x: self.x - 1, y: self.y},
-            Direction::Still => Position {x: self.x, y: self.y},
+            Direction::Up => Position {
+                x: self.x,
+                y: self.y - 1,
+            },
+            Direction::Right => Position {
+                x: self.x + 1,
+                y: self.y,
+            },
+            Direction::Down => Position {
+                x: self.x,
+                y: self.y + 1,
+            },
+            Direction::Left => Position {
+                x: self.x - 1,
+                y: self.y,
+            },
+            Direction::Still => Position {
+                x: self.x,
+                y: self.y,
+            },
         }
     }
 
@@ -65,14 +83,13 @@ impl Snake {
             segments.push(SnakeSegment::new(x, y, Direction::Still));
         }
 
-        Snake {
-            segments: segments,
-        }
+        Snake { segments: segments }
     }
 
     pub fn grow(&mut self) -> () {
         let pos = self.last_segment_pos();
-        self.segments.push(SnakeSegment::new(pos.x, pos.y, Direction::Still));
+        self.segments
+            .push(SnakeSegment::new(pos.x, pos.y, Direction::Still));
     }
 
     pub fn move_fwd(&mut self) -> () {

@@ -1,17 +1,17 @@
-extern crate sdl2;
 extern crate rand;
+extern crate sdl2;
 
-use sdl2::pixels::Color;
 use sdl2::event::Event;
 use sdl2::keyboard::Keycode;
+use sdl2::pixels::Color;
 use sdl2::rect::Rect;
 
 mod model;
 
-use model::world::World;
-use model::world::CellContent;
-use model::snake::Snake;
 use model::snake::Direction;
+use model::snake::Snake;
+use model::world::CellContent;
+use model::world::World;
 
 pub fn main() {
     let sdl_context = sdl2::init().unwrap();
@@ -36,17 +36,27 @@ pub fn main() {
     'running: loop {
         for event in event_pump.poll_iter() {
             match event {
-                Event::Quit { .. } |
-                Event::KeyDown { keycode: Some(Keycode::Escape), .. } =>
-                    break 'running,
-                Event::KeyDown { keycode: Some(Keycode::Left), .. } =>
-                    snake.turn(Direction::Left),
-                Event::KeyDown { keycode: Some(Keycode::Right), .. } =>
-                    snake.turn(Direction::Right),
-                Event::KeyDown { keycode: Some(Keycode::Up), .. } =>
-                    snake.turn(Direction::Up),
-                Event::KeyDown { keycode: Some(Keycode::Down), .. } =>
-                    snake.turn(Direction::Down),
+                Event::Quit { .. }
+                | Event::KeyDown {
+                    keycode: Some(Keycode::Escape),
+                    ..
+                } => break 'running,
+                Event::KeyDown {
+                    keycode: Some(Keycode::Left),
+                    ..
+                } => snake.turn(Direction::Left),
+                Event::KeyDown {
+                    keycode: Some(Keycode::Right),
+                    ..
+                } => snake.turn(Direction::Right),
+                Event::KeyDown {
+                    keycode: Some(Keycode::Up),
+                    ..
+                } => snake.turn(Direction::Up),
+                Event::KeyDown {
+                    keycode: Some(Keycode::Down),
+                    ..
+                } => snake.turn(Direction::Down),
                 _ => {}
             }
         }
@@ -55,18 +65,17 @@ pub fn main() {
             let np = snake.next_head_pos();
 
             match world.get_cell(np.x, np.y) {
-                CellContent::Nothing =>
-                    if snake.is_here(np) {
-                        break 'running
-                    } else {
-                        snake.move_fwd()
-                    },
+                CellContent::Nothing => if snake.is_here(np) {
+                    break 'running;
+                } else {
+                    snake.move_fwd()
+                },
                 CellContent::Nugget => {
                     world.consume_nugget();
                     snake.grow();
                     world.spawn_nugget(&snake);
                     snake.move_fwd();
-                },
+                }
                 CellContent::Wall => break 'running,
             }
         }
@@ -85,12 +94,12 @@ pub fn main() {
                     CellContent::Nugget => {
                         canvas.set_draw_color(nugget_color);
                         canvas.fill_rect(Rect::new(x_pxl, y_pxl, 32, 32)).ok();
-                    },
+                    }
                     CellContent::Wall => {
                         canvas.set_draw_color(wall_color);
                         canvas.fill_rect(Rect::new(x_pxl, y_pxl, 32, 32)).ok();
-                    },
-                    _ => ()
+                    }
+                    _ => (),
                 }
             }
         }
