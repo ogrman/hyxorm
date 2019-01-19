@@ -33,15 +33,8 @@ pub fn main() {
     let mut event_pump = sdl_context.event_pump().unwrap();
 
     let mut world = World::new(16, 16);
-    let snake_start_x = 1;
-    let snake_start_y = 5;
-    let snake_start_size = 5;
-    let mut snake = Snake::new(
-        snake_start_x,
-        snake_start_y,
-        Direction::Right,
-        snake_start_size
-    );
+    let clone_this_snake = Snake::new(1, 5, Direction::Right, 5);
+    let mut snake = clone_this_snake.clone();
     world.spawn_nugget(&snake);
 
     'running: loop {
@@ -88,12 +81,7 @@ pub fn main() {
                     snake.move_fwd();
                 }
                 CellContent::Wall => {
-                    snake = Snake::new(
-                        snake_start_x,
-                        snake_start_y,
-                        Direction::Right,
-                        snake_start_size
-                    );
+                    snake = clone_this_snake.clone();
                 }
             }
         }

@@ -1,3 +1,4 @@
+#[derive(Clone)]
 pub struct SnakeSegment {
     pub x: usize,
     pub y: usize,
@@ -65,6 +66,7 @@ pub enum Direction {
     Still,
 }
 
+#[derive(Clone)]
 pub struct Snake {
     pub segments: Vec<SnakeSegment>,
 }
