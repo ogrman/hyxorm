@@ -14,33 +14,16 @@ impl SnakeSegment {
     }
 
     pub fn move_fwd(&mut self) -> () {
-        let np = self.next_pos();
-        self.pos.x = np.x;
-        self.pos.y = np.y;
+        self.pos = self.next_pos();
     }
 
     pub fn next_pos(&self) -> Position {
         match self.direction {
-            Direction::Up => Position {
-                x: self.pos.x,
-                y: self.pos.y - 1,
-            },
-            Direction::Right => Position {
-                x: self.pos.x + 1,
-                y: self.pos.y,
-            },
-            Direction::Down => Position {
-                x: self.pos.x,
-                y: self.pos.y + 1,
-            },
-            Direction::Left => Position {
-                x: self.pos.x - 1,
-                y: self.pos.y,
-            },
-            Direction::Still => Position {
-                x: self.pos.x,
-                y: self.pos.y,
-            },
+            Direction::Up => Position { y: self.pos.y - 1, .. self.pos },
+            Direction::Right => Position { x: self.pos.x + 1, .. self.pos },
+            Direction::Down => Position { y: self.pos.y + 1, .. self.pos },
+            Direction::Left => Position { x: self.pos.x - 1, .. self.pos },
+            Direction::Still => self.pos
         }
     }
 
