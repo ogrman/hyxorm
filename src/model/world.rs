@@ -46,8 +46,13 @@ impl World {
         self.cells[index(self.width, p.x, p.y)].clone()
     }
 
+    fn set_cell(&mut self, p: &Position, content: CellContent) -> () {
+        self.cells[index(self.width, p.x, p.y)] = content;
+    }
+
     pub fn consume_nugget(&mut self) -> () {
-        self.cells[index(self.width, self.nugget.x, self.nugget.y)] = CellContent::Nothing;
+        let nugget = self.nugget;
+        self.set_cell(&nugget, CellContent::Nothing);
     }
 
     pub fn spawn_nugget(&mut self, snake: &Snake) -> () {
@@ -61,7 +66,7 @@ impl World {
             let is_snake_here = snake.is_here(&p);
 
             if is_nothing && !is_snake_here {
-                self.cells[index(self.width, p.x, p.y)] = CellContent::Nugget;
+                self.set_cell(&p, CellContent::Nugget);
                 self.nugget = p;
                 break 'l;
             }

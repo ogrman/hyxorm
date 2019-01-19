@@ -69,7 +69,7 @@ pub struct Snake {
     pub segments: Vec<SnakeSegment>,
 }
 
-#[derive(PartialEq)]
+#[derive(Copy, Clone, PartialEq)]
 pub struct Position {
     pub x: usize,
     pub y: usize,
