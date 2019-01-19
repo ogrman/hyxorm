@@ -13,8 +13,7 @@ pub enum CellContent {
 pub struct World {
     pub width: usize,
     pub height: usize,
-    nugget_x: usize,
-    nugget_y: usize,
+    nugget: Position,
     cells: Vec<CellContent>,
 }
 
@@ -38,8 +37,7 @@ impl World {
         World {
             width: width,
             height: height,
-            nugget_x: 0,
-            nugget_y: 0,
+            nugget: Position { x: 0, y: 0 },
             cells: cells,
         }
     }
@@ -49,7 +47,7 @@ impl World {
     }
 
     pub fn consume_nugget(&mut self) -> () {
-        self.cells[index(self.width, self.nugget_x, self.nugget_y)] = CellContent::Nothing;
+        self.cells[index(self.width, self.nugget.x, self.nugget.y)] = CellContent::Nothing;
     }
 
     pub fn spawn_nugget(&mut self, snake: &Snake) -> () {
@@ -62,8 +60,8 @@ impl World {
 
             if is_nothing && !is_snake_here {
                 self.cells[index(self.width, x, y)] = CellContent::Nugget;
-                self.nugget_x = x;
-                self.nugget_y = y;
+                self.nugget.x = x;
+                self.nugget.y = y;
                 break 'l;
             }
         }
