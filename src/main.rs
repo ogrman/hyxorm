@@ -55,7 +55,12 @@ pub fn main() {
             let np = snake.next_head_pos();
 
             match world.get_cell(np.x, np.y) {
-                CellContent::Nothing => snake.move_fwd(),
+                CellContent::Nothing =>
+                    if snake.is_here(np) {
+                        break 'running
+                    } else {
+                        snake.move_fwd()
+                    },
                 CellContent::Nugget => {
                     world.consume_nugget();
                     snake.grow();

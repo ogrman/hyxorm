@@ -51,6 +51,7 @@ pub struct Snake {
     pub segments: Vec<SnakeSegment>,
 }
 
+#[derive(PartialEq)]
 pub struct Position {
     pub x: usize,
     pub y: usize,
@@ -100,5 +101,9 @@ impl Snake {
 
     pub fn turn(&mut self, dir: Direction) -> () {
         self.segments[0].turn(dir);
+    }
+
+    pub fn is_here(&self, p: Position) -> bool {
+        self.segments.iter().any(|s| s.pos() == p)
     }
 }

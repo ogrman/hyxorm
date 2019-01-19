@@ -1,6 +1,7 @@
 use rand;
 
 use model::snake::Snake;
+use model::snake::Position;
 
 #[derive(PartialEq)]
 #[derive(Clone)]
@@ -58,7 +59,7 @@ impl World {
             let y = rand::random::<usize>() % self.height;
 
             let is_nothing = self.get_cell(x, y) == CellContent::Nothing;
-            let is_snake_here = snake.segments.iter().any(|s| s.x == x && s.y == y);
+            let is_snake_here = snake.is_here(Position {x: x, y: y});
 
             if is_nothing && !is_snake_here {
                 self.cells[index(self.width, x, y)] = CellContent::Nugget;
