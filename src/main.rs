@@ -1,3 +1,4 @@
+#![feature(drain_filter)]
 extern crate rand;
 extern crate sdl2;
 
@@ -37,7 +38,7 @@ pub fn main() {
     let mut world = World::new(16, 16);
     let clone_this_snake = Snake::new(Position { x: 1, y: 5 }, Direction::Right, 5);
     let mut snake = clone_this_snake.clone();
-    world.spawn_nugget(&snake);
+    world.spawn_nugget(&snake, None);
 
     'running: loop {
         for event in event_pump.poll_iter() {
@@ -79,10 +80,13 @@ pub fn main() {
                     }
                 }
                 CellContent::Nugget => {
-                    world.consume_nugget();
+                    world.consume_nugget(&np);
                     snake.grow();
-                    world.spawn_nugget(&snake);
+                    world.spawn_nugget(&snake, Some(&np));
                     snake.move_fwd();
+                    if world.score > 0 && world.score % 10 == 0 {
+                        world.spawn_nugget(&snake, Some(&np));
+                    }
                 }
                 CellContent::Wall => {
                     snake = clone_this_snake.clone();

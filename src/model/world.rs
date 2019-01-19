@@ -13,7 +13,7 @@ pub enum CellContent {
 pub struct World {
     pub width: usize,
     pub height: usize,
-    nugget: Position,
+    nuggets: Vec<Position>,
     cells: Vec<CellContent>,
     pub score: usize,
 }
@@ -38,7 +38,7 @@ impl World {
         World {
             width,
             height,
-            nugget: Position { x: 0, y: 0 },
+            nuggets: Vec::new(),
             cells,
             score: 0,
         }
@@ -52,13 +52,17 @@ impl World {
         self.cells[index(self.width, p.x, p.y)] = content;
     }
 
-    pub fn consume_nugget(&mut self) {
-        let nugget = self.nugget;
-        self.score += 1;
-        self.set_cell(&nugget, CellContent::Nothing);
+    pub fn consume_nugget(&mut self, np: &Position) {
+        let maybe_nugget = self.nuggets.drain_filter(|p| p == np);
+        for _ in maybe_nugget {
+            self.score += 1;
+            // Why can't i do this instead???
+            // self.set_cell(&nugget, CellContent::Nothing);
+            self.cells[index(self.width, np.x, np.y)] = CellContent::Nothing;
+        }
     }
 
-    pub fn spawn_nugget(&mut self, snake: &Snake) {
+    pub fn spawn_nugget(&mut self, snake: &Snake, next_pos: Option<&Position>) {
         'l: loop {
             let p = Position {
                 x: rand::random::<usize>() % self.width,
@@ -67,10 +71,11 @@ impl World {
 
             let is_nothing = self.get_cell(&p) == CellContent::Nothing;
             let is_snake_here = snake.is_here(&p);
+            let is_next_pos = next_pos.map_or(false, |np| *np == p);
 
-            if is_nothing && !is_snake_here {
+            if is_nothing && !is_snake_here && !is_next_pos {
                 self.set_cell(&p, CellContent::Nugget);
-                self.nugget = p;
+                self.nuggets.push(p);
                 break 'l;
             }
         }

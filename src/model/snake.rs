@@ -54,7 +54,7 @@ pub struct Snake {
     pub segments: Vec<SnakeSegment>,
 }
 
-#[derive(Copy, Clone, PartialEq)]
+#[derive(Copy, Clone, Debug, PartialEq)]
 pub struct Position {
     pub x: usize,
     pub y: usize,
