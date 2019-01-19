@@ -1,53 +1,45 @@
 #[derive(Clone)]
 pub struct SnakeSegment {
-    pub x: usize,
-    pub y: usize,
+    pub pos: Position,
     pub direction: Direction,
 }
 
 impl SnakeSegment {
-    pub fn new(x: usize, y: usize, direction: Direction) -> SnakeSegment {
+
+    pub fn new(pos: Position, direction: Direction) -> SnakeSegment {
         SnakeSegment {
-            x: x,
-            y: y,
+            pos: pos,
             direction: direction,
         }
     }
 
     pub fn move_fwd(&mut self) -> () {
         let np = self.next_pos();
-        self.x = np.x;
-        self.y = np.y;
-    }
-
-    pub fn pos(&self) -> Position {
-        Position {
-            x: self.x,
-            y: self.y,
-        }
+        self.pos.x = np.x;
+        self.pos.y = np.y;
     }
 
     pub fn next_pos(&self) -> Position {
         match self.direction {
             Direction::Up => Position {
-                x: self.x,
-                y: self.y - 1,
+                x: self.pos.x,
+                y: self.pos.y - 1,
             },
             Direction::Right => Position {
-                x: self.x + 1,
-                y: self.y,
+                x: self.pos.x + 1,
+                y: self.pos.y,
             },
             Direction::Down => Position {
-                x: self.x,
-                y: self.y + 1,
+                x: self.pos.x,
+                y: self.pos.y + 1,
             },
             Direction::Left => Position {
-                x: self.x - 1,
-                y: self.y,
+                x: self.pos.x - 1,
+                y: self.pos.y,
             },
             Direction::Still => Position {
-                x: self.x,
-                y: self.y,
+                x: self.pos.x,
+                y: self.pos.y,
             },
         }
     }
@@ -78,11 +70,11 @@ pub struct Position {
 }
 
 impl Snake {
-    pub fn new(x: usize, y: usize, dir: Direction, length: usize) -> Snake {
-        let mut segments = vec![SnakeSegment::new(x, y, dir)];
+    pub fn new(pos: Position, dir: Direction, length: usize) -> Snake {
+        let mut segments = vec![SnakeSegment::new(pos, dir)];
 
         for _ in 1..length {
-            segments.push(SnakeSegment::new(x, y, Direction::Still));
+            segments.push(SnakeSegment::new(pos, Direction::Still));
         }
 
         Snake { segments: segments }
@@ -91,7 +83,7 @@ impl Snake {
     pub fn grow(&mut self) -> () {
         let pos = self.last_segment_pos();
         self.segments
-            .push(SnakeSegment::new(pos.x, pos.y, Direction::Still));
+            .push(SnakeSegment::new(pos, Direction::Still));
     }
 
     pub fn move_fwd(&mut self) -> () {
@@ -115,7 +107,7 @@ impl Snake {
     }
 
     pub fn last_segment_pos(&self) -> Position {
-        self.segments.last().unwrap().pos()
+        self.segments.last().unwrap().pos
     }
 
     pub fn turn(&mut self, dir: Direction) -> () {
@@ -123,6 +115,6 @@ impl Snake {
     }
 
     pub fn is_here(&self, p: &Position) -> bool {
-        self.segments.iter().any(|s| &s.pos() == p)
+        self.segments.iter().any(|s| &s.pos == p)
     }
 }

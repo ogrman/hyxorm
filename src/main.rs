@@ -33,7 +33,7 @@ pub fn main() {
     let mut event_pump = sdl_context.event_pump().unwrap();
 
     let mut world = World::new(16, 16);
-    let clone_this_snake = Snake::new(1, 5, Direction::Right, 5);
+    let clone_this_snake = Snake::new(Position { x: 1, y: 5 }, Direction::Right, 5);
     let mut snake = clone_this_snake.clone();
     world.spawn_nugget(&snake);
 
@@ -119,8 +119,8 @@ pub fn main() {
         canvas.set_draw_color(snake_color);
 
         for segment in snake.segments.iter() {
-            let x_pxl = segment.x as i32 * pixel_size_i32;
-            let y_pxl = segment.y as i32 * pixel_size_i32;
+            let x_pxl = segment.pos.x as i32 * pixel_size_i32;
+            let y_pxl = segment.pos.y as i32 * pixel_size_i32;
             canvas.fill_rect(Rect::new(x_pxl, y_pxl, pixel_size_u32, pixel_size_u32)).ok();
         }
 
