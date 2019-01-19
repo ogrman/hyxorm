@@ -73,7 +73,7 @@ pub fn main() {
             match world.get_cell(&np) {
                 CellContent::Nothing => {
                     if snake.is_here(&np) {
-                        break 'running;
+                        snake = clone_this_snake.clone();
                     } else {
                         snake.move_fwd()
                     }
