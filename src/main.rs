@@ -128,10 +128,11 @@ pub fn main() {
         for cd in score_digits.chars() {
             let digit = cd.to_digit(10).unwrap();
             let char_vec = from_digit(digit as usize);
-            let mut digit_x: u32 = 0;
-            let mut digit_y: u32 = 0;
+            let mut digit_pixel: u32 = 0;
             let digit_offset = digit_count * (digit_width + digit_padding);
             for x in char_vec.iter() {
+                let digit_x = digit_pixel % 5;
+                let digit_y = digit_pixel / 5;
                 if *x == 1 {
                     canvas.fill_rect(
                         Rect::new(
@@ -142,12 +143,7 @@ pub fn main() {
                         )
                     ).ok();
                 }
-                if digit_x == 4 {
-                    digit_x = 0;
-                    digit_y += 1;
-                } else {
-                    digit_x += 1;
-                }
+                digit_pixel += 1;
             }
             digit_count += 1;
         }
