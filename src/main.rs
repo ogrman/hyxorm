@@ -12,6 +12,7 @@ use model::snake::Direction;
 use model::snake::Snake;
 use model::world::CellContent;
 use model::world::World;
+use model::snake::Position;
 
 pub fn main() {
     let sdl_context = sdl2::init().unwrap();
@@ -64,8 +65,8 @@ pub fn main() {
         if tick % 10 == 0 {
             let np = snake.next_head_pos();
 
-            match world.get_cell(np.x, np.y) {
-                CellContent::Nothing => if snake.is_here(np) {
+            match world.get_cell(&np) {
+                CellContent::Nothing => if snake.is_here(&np) {
                     break 'running;
                 } else {
                     snake.move_fwd()
@@ -90,7 +91,7 @@ pub fn main() {
             for x in 0..world.width {
                 let x_pxl = x as i32 * 32;
                 let y_pxl = y as i32 * 32;
-                match world.get_cell(x, y) {
+                match world.get_cell(&Position { x: x, y: y }) {
                     CellContent::Nugget => {
                         canvas.set_draw_color(nugget_color);
                         canvas.fill_rect(Rect::new(x_pxl, y_pxl, 32, 32)).ok();

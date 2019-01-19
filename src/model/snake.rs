@@ -120,7 +120,7 @@ impl Snake {
         self.segments[0].turn(dir);
     }
 
-    pub fn is_here(&self, p: Position) -> bool {
-        self.segments.iter().any(|s| s.pos() == p)
+    pub fn is_here(&self, p: &Position) -> bool {
+        self.segments.iter().any(|s| &s.pos() == p)
     }
 }

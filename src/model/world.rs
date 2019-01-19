@@ -42,8 +42,8 @@ impl World {
         }
     }
 
-    pub fn get_cell(&self, x: usize, y: usize) -> CellContent {
-        self.cells[index(self.width, x, y)].clone()
+    pub fn get_cell(&self, p: &Position) -> CellContent {
+        self.cells[index(self.width, p.x, p.y)].clone()
     }
 
     pub fn consume_nugget(&mut self) -> () {
@@ -52,16 +52,17 @@ impl World {
 
     pub fn spawn_nugget(&mut self, snake: &Snake) -> () {
         'l: loop {
-            let x = rand::random::<usize>() % self.width;
-            let y = rand::random::<usize>() % self.height;
+            let p = Position {
+                x: rand::random::<usize>() % self.width,
+                y: rand::random::<usize>() % self.height
+            };
 
-            let is_nothing = self.get_cell(x, y) == CellContent::Nothing;
-            let is_snake_here = snake.is_here(Position { x: x, y: y });
+            let is_nothing = self.get_cell(&p) == CellContent::Nothing;
+            let is_snake_here = snake.is_here(&p);
 
             if is_nothing && !is_snake_here {
-                self.cells[index(self.width, x, y)] = CellContent::Nugget;
-                self.nugget.x = x;
-                self.nugget.y = y;
+                self.cells[index(self.width, p.x, p.y)] = CellContent::Nugget;
+                self.nugget = p;
                 break 'l;
             }
         }
