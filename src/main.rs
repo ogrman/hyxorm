@@ -91,18 +91,22 @@ pub fn main() {
         let score_color = Color::RGB(0, 0, 255);
         let snake_color = Color::RGB(0, 255, 0);
 
+        let pixel_size_u32: u32 = 32;
+        let pixel_size_usize: usize = pixel_size_u32 as usize;
+        let pixel_size_i32: i32 = pixel_size_u32 as i32;
+
         for y in 0..world.height {
             for x in 0..world.width {
-                let x_pxl = x as i32 * 32;
-                let y_pxl = y as i32 * 32;
+                let x_pxl = x as i32 * pixel_size_i32;
+                let y_pxl = y as i32 * pixel_size_i32;
                 match world.get_cell(&Position { x: x, y: y }) {
                     CellContent::Nugget => {
                         canvas.set_draw_color(nugget_color);
-                        canvas.fill_rect(Rect::new(x_pxl, y_pxl, 32, 32)).ok();
+                        canvas.fill_rect(Rect::new(x_pxl, y_pxl, pixel_size_u32, pixel_size_u32)).ok();
                     }
                     CellContent::Wall => {
                         canvas.set_draw_color(wall_color);
-                        canvas.fill_rect(Rect::new(x_pxl, y_pxl, 32, 32)).ok();
+                        canvas.fill_rect(Rect::new(x_pxl, y_pxl, pixel_size_u32, pixel_size_u32)).ok();
                     }
                     _ => (),
                 }
@@ -112,13 +116,13 @@ pub fn main() {
         canvas.set_draw_color(snake_color);
 
         for segment in snake.segments.iter() {
-            let x_pxl = segment.x as i32 * 32;
-            let y_pxl = segment.y as i32 * 32;
-            canvas.fill_rect(Rect::new(x_pxl, y_pxl, 32, 32)).ok();
+            let x_pxl = segment.x as i32 * pixel_size_i32;
+            let y_pxl = segment.y as i32 * pixel_size_i32;
+            canvas.fill_rect(Rect::new(x_pxl, y_pxl, pixel_size_u32, pixel_size_u32)).ok();
         }
 
-        let start_x: u32 = ((world.width + 1) * 32) as u32;
-        let start_y: u32 = 32;
+        let start_x: u32 = ((world.width + 1) * pixel_size_usize) as u32;
+        let start_y: u32 = pixel_size_u32;
         let score_digits = world.score.to_string();
         let font_pixel_size: u32 = 4;
         let mut digit_count = 0;
