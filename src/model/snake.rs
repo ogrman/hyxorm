@@ -5,7 +5,6 @@ pub struct SnakeSegment {
 }
 
 impl SnakeSegment {
-
     pub fn new(pos: Position, direction: Direction) -> SnakeSegment {
         SnakeSegment {
             pos: pos,
@@ -19,11 +18,23 @@ impl SnakeSegment {
 
     pub fn next_pos(&self) -> Position {
         match self.direction {
-            Direction::Up => Position { y: self.pos.y - 1, .. self.pos },
-            Direction::Right => Position { x: self.pos.x + 1, .. self.pos },
-            Direction::Down => Position { y: self.pos.y + 1, .. self.pos },
-            Direction::Left => Position { x: self.pos.x - 1, .. self.pos },
-            Direction::Still => self.pos
+            Direction::Up => Position {
+                y: self.pos.y - 1,
+                ..self.pos
+            },
+            Direction::Right => Position {
+                x: self.pos.x + 1,
+                ..self.pos
+            },
+            Direction::Down => Position {
+                y: self.pos.y + 1,
+                ..self.pos
+            },
+            Direction::Left => Position {
+                x: self.pos.x - 1,
+                ..self.pos
+            },
+            Direction::Still => self.pos,
         }
     }
 
@@ -65,8 +76,7 @@ impl Snake {
 
     pub fn grow(&mut self) -> () {
         let pos = self.last_segment_pos();
-        self.segments
-            .push(SnakeSegment::new(pos, Direction::Still));
+        self.segments.push(SnakeSegment::new(pos, Direction::Still));
     }
 
     pub fn move_fwd(&mut self) -> () {

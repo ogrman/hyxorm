@@ -62,7 +62,7 @@ impl World {
         'l: loop {
             let p = Position {
                 x: rand::random::<usize>() % self.width,
-                y: rand::random::<usize>() % self.height
+                y: rand::random::<usize>() % self.height,
             };
 
             let is_nothing = self.get_cell(&p) == CellContent::Nothing;

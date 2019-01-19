@@ -6,15 +6,15 @@ use sdl2::keyboard::Keycode;
 use sdl2::pixels::Color;
 use sdl2::rect::Rect;
 
-mod model;
 mod font;
+mod model;
 
+use font::font::from_digit;
 use model::snake::Direction;
+use model::snake::Position;
 use model::snake::Snake;
 use model::world::CellContent;
 use model::world::World;
-use model::snake::Position;
-use font::font::from_digit;
 
 pub fn main() {
     let sdl_context = sdl2::init().unwrap();
@@ -105,11 +105,15 @@ pub fn main() {
                 match world.get_cell(&Position { x: x, y: y }) {
                     CellContent::Nugget => {
                         canvas.set_draw_color(nugget_color);
-                        canvas.fill_rect(Rect::new(x_pxl, y_pxl, pixel_size_u32, pixel_size_u32)).ok();
+                        canvas
+                            .fill_rect(Rect::new(x_pxl, y_pxl, pixel_size_u32, pixel_size_u32))
+                            .ok();
                     }
                     CellContent::Wall => {
                         canvas.set_draw_color(wall_color);
-                        canvas.fill_rect(Rect::new(x_pxl, y_pxl, pixel_size_u32, pixel_size_u32)).ok();
+                        canvas
+                            .fill_rect(Rect::new(x_pxl, y_pxl, pixel_size_u32, pixel_size_u32))
+                            .ok();
                     }
                     _ => (),
                 }
@@ -121,7 +125,9 @@ pub fn main() {
         for segment in snake.segments.iter() {
             let x_pxl = segment.pos.x as i32 * pixel_size_i32;
             let y_pxl = segment.pos.y as i32 * pixel_size_i32;
-            canvas.fill_rect(Rect::new(x_pxl, y_pxl, pixel_size_u32, pixel_size_u32)).ok();
+            canvas
+                .fill_rect(Rect::new(x_pxl, y_pxl, pixel_size_u32, pixel_size_u32))
+                .ok();
         }
 
         let start_x: u32 = ((world.width + 1) * pixel_size_usize) as u32;
@@ -141,14 +147,13 @@ pub fn main() {
                 let digit_x = digit_pixel % 5;
                 let digit_y = digit_pixel / 5;
                 if *x == 1 {
-                    canvas.fill_rect(
-                        Rect::new(
+                    canvas
+                        .fill_rect(Rect::new(
                             (start_x + digit_offset + digit_x * font_pixel_size) as i32,
                             (start_y + digit_y * font_pixel_size) as i32,
                             font_pixel_size,
-                            font_pixel_size
-                        )
-                    ).ok();
+                            font_pixel_size,
+                        )).ok();
                 }
                 digit_pixel += 1;
             }
