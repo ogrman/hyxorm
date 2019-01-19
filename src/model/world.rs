@@ -62,22 +62,29 @@ impl World {
         }
     }
 
+    fn count_nothings(&self) -> usize {
+        self.cells.iter().filter(|c| **c == CellContent::Nothing).count()
+    }
+
     pub fn spawn_nugget(&mut self, snake: &Snake, next_pos: Option<&Position>) {
-        'l: loop {
-            let p = Position {
-                x: rand::random::<usize>() % self.width,
-                y: rand::random::<usize>() % self.height,
-            };
+        let free_cells = (self.count_nothings() - next_pos.iter().count() - snake.len()) as i32;
+        if free_cells >= 1 {
+          'l: loop {
+              let p = Position {
+                  x: rand::random::<usize>() % self.width,
+                  y: rand::random::<usize>() % self.height,
+              };
 
-            let is_nothing = self.get_cell(&p) == CellContent::Nothing;
-            let is_snake_here = snake.is_here(&p);
-            let is_next_pos = next_pos.map_or(false, |np| *np == p);
+              let is_nothing = self.get_cell(&p) == CellContent::Nothing;
+              let is_snake_here = snake.is_here(&p);
+              let is_next_pos = next_pos.map_or(false, |np| *np == p);
 
-            if is_nothing && !is_snake_here && !is_next_pos {
-                self.set_cell(&p, CellContent::Nugget);
-                self.nuggets.push(p);
-                break 'l;
-            }
+              if is_nothing && !is_snake_here && !is_next_pos {
+                  self.set_cell(&p, CellContent::Nugget);
+                  self.nuggets.push(p);
+                  break 'l;
+              }
+          }
         }
     }
 }

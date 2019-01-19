@@ -71,6 +71,10 @@ impl Snake {
         Snake { segments }
     }
 
+    pub fn len(&self) -> usize {
+        self.segments.len()
+    }
+
     pub fn grow(&mut self) {
         let pos = self.last_segment_pos();
         self.segments.push(SnakeSegment::new(pos, Direction::Still));
