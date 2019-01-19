@@ -36,10 +36,10 @@ impl World {
         }
 
         World {
-            width: width,
-            height: height,
+            width,
+            height,
             nugget: Position { x: 0, y: 0 },
-            cells: cells,
+            cells,
             score: 0,
         }
     }
@@ -48,17 +48,17 @@ impl World {
         self.cells[index(self.width, p.x, p.y)].clone()
     }
 
-    fn set_cell(&mut self, p: &Position, content: CellContent) -> () {
+    fn set_cell(&mut self, p: &Position, content: CellContent) {
         self.cells[index(self.width, p.x, p.y)] = content;
     }
 
-    pub fn consume_nugget(&mut self) -> () {
+    pub fn consume_nugget(&mut self) {
         let nugget = self.nugget;
         self.score += 1;
         self.set_cell(&nugget, CellContent::Nothing);
     }
 
-    pub fn spawn_nugget(&mut self, snake: &Snake) -> () {
+    pub fn spawn_nugget(&mut self, snake: &Snake) {
         'l: loop {
             let p = Position {
                 x: rand::random::<usize>() % self.width,

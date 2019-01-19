@@ -9,7 +9,7 @@ use sdl2::rect::Rect;
 mod font;
 mod model;
 
-use font::font::from_digit;
+use font::fivebyfive;
 use model::snake::Direction;
 use model::snake::Position;
 use model::snake::Snake;
@@ -69,11 +69,13 @@ pub fn main() {
             let np = snake.next_head_pos();
 
             match world.get_cell(&np) {
-                CellContent::Nothing => if snake.is_here(&np) {
-                    break 'running;
-                } else {
-                    snake.move_fwd()
-                },
+                CellContent::Nothing => {
+                    if snake.is_here(&np) {
+                        break 'running;
+                    } else {
+                        snake.move_fwd()
+                    }
+                }
                 CellContent::Nugget => {
                     world.consume_nugget();
                     snake.grow();
@@ -102,7 +104,7 @@ pub fn main() {
             for x in 0..world.width {
                 let x_pxl = x as i32 * pixel_size_i32;
                 let y_pxl = y as i32 * pixel_size_i32;
-                match world.get_cell(&Position { x: x, y: y }) {
+                match world.get_cell(&Position { x, y }) {
                     CellContent::Nugget => {
                         canvas.set_draw_color(nugget_color);
                         canvas
@@ -140,10 +142,9 @@ pub fn main() {
         canvas.set_draw_color(score_color);
         for cd in score_digits.chars() {
             let digit = cd.to_digit(10).unwrap();
-            let char_vec = from_digit(digit as usize);
-            let mut digit_pixel: u32 = 0;
+            let char_vec = fivebyfive::from_digit(digit as usize);
             let digit_offset = digit_count * (digit_width + digit_padding);
-            for x in char_vec.iter() {
+            for (digit_pixel, x) in char_vec.iter().enumerate().map(|(dp, x)| (dp as u32, x)) {
                 let digit_x = digit_pixel % 5;
                 let digit_y = digit_pixel / 5;
                 if *x == 1 {
@@ -153,9 +154,9 @@ pub fn main() {
                             (start_y + digit_y * font_pixel_size) as i32,
                             font_pixel_size,
                             font_pixel_size,
-                        )).ok();
+                        ))
+                        .ok();
                 }
-                digit_pixel += 1;
             }
             digit_count += 1;
         }
