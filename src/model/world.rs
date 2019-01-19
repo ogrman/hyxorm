@@ -15,6 +15,7 @@ pub struct World {
     pub height: usize,
     nugget: Position,
     cells: Vec<CellContent>,
+    pub score: usize,
 }
 
 fn index(width: usize, x: usize, y: usize) -> usize {
@@ -39,6 +40,7 @@ impl World {
             height: height,
             nugget: Position { x: 0, y: 0 },
             cells: cells,
+            score: 0,
         }
     }
 
@@ -52,6 +54,7 @@ impl World {
 
     pub fn consume_nugget(&mut self) -> () {
         let nugget = self.nugget;
+        self.score += 1;
         self.set_cell(&nugget, CellContent::Nothing);
     }
 

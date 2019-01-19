@@ -7,12 +7,14 @@ use sdl2::pixels::Color;
 use sdl2::rect::Rect;
 
 mod model;
+mod font;
 
 use model::snake::Direction;
 use model::snake::Snake;
 use model::world::CellContent;
 use model::world::World;
 use model::snake::Position;
+use font::font::from_digit;
 
 pub fn main() {
     let sdl_context = sdl2::init().unwrap();
@@ -86,6 +88,8 @@ pub fn main() {
 
         let wall_color = Color::RGB(255, 0, 0);
         let nugget_color = Color::RGB(0, 0, 255);
+        let score_color = Color::RGB(0, 0, 255);
+        let snake_color = Color::RGB(0, 255, 0);
 
         for y in 0..world.height {
             for x in 0..world.width {
@@ -105,12 +109,47 @@ pub fn main() {
             }
         }
 
-        canvas.set_draw_color(Color::RGB(0, 255, 0));
+        canvas.set_draw_color(snake_color);
 
         for segment in snake.segments.iter() {
             let x_pxl = segment.x as i32 * 32;
             let y_pxl = segment.y as i32 * 32;
             canvas.fill_rect(Rect::new(x_pxl, y_pxl, 32, 32)).ok();
+        }
+
+        let start_x: u32 = ((world.width + 1) * 32) as u32;
+        let start_y: u32 = 32;
+        let score_digits = world.score.to_string();
+        let font_pixel_size: u32 = 4;
+        let mut digit_count = 0;
+        let digit_padding = 5;
+        let digit_width = 20;
+        canvas.set_draw_color(score_color);
+        for cd in score_digits.chars() {
+            let digit = cd.to_digit(10).unwrap();
+            let char_vec = from_digit(digit as usize);
+            let mut digit_x: u32 = 0;
+            let mut digit_y: u32 = 0;
+            let digit_offset = digit_count * (digit_width + digit_padding);
+            for x in char_vec.iter() {
+                if *x == 1 {
+                    canvas.fill_rect(
+                        Rect::new(
+                            (start_x + digit_offset + digit_x * font_pixel_size) as i32,
+                            (start_y + digit_y * font_pixel_size) as i32,
+                            font_pixel_size,
+                            font_pixel_size
+                        )
+                    ).ok();
+                }
+                if digit_x == 4 {
+                    digit_x = 0;
+                    digit_y += 1;
+                } else {
+                    digit_x += 1;
+                }
+            }
+            digit_count += 1;
         }
 
         canvas.present();
