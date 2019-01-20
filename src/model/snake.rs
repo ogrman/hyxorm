@@ -1,39 +1,41 @@
+#[derive(Clone)]
 pub struct SnakeSegment {
-    pub x: usize,
-    pub y: usize,
+    pub pos: Position,
     pub direction: Direction,
 }
 
 impl SnakeSegment {
-    pub fn new(x: usize, y: usize, direction: Direction) -> SnakeSegment {
-        SnakeSegment {
-            x: x,
-            y: y,
-            direction: direction,
-        }
+    pub fn new(pos: Position, direction: Direction) -> SnakeSegment {
+        SnakeSegment { pos, direction }
     }
 
-    pub fn move_fwd(&mut self) -> () {
-        let np = self.next_pos();
-        self.x = np.x;
-        self.y = np.y;
-    }
-
-    pub fn pos(&self) -> Position {
-        Position {x: self.x, y: self.y}
+    pub fn move_fwd(&mut self) {
+        self.pos = self.next_pos();
     }
 
     pub fn next_pos(&self) -> Position {
         match self.direction {
-            Direction::Up => Position {x: self.x, y: self.y - 1},
-            Direction::Right => Position {x: self.x + 1, y: self.y},
-            Direction::Down => Position {x: self.x, y: self.y + 1},
-            Direction::Left => Position {x: self.x - 1, y: self.y},
-            Direction::Still => Position {x: self.x, y: self.y},
+            Direction::Up => Position {
+                y: self.pos.y - 1,
+                ..self.pos
+            },
+            Direction::Right => Position {
+                x: self.pos.x + 1,
+                ..self.pos
+            },
+            Direction::Down => Position {
+                y: self.pos.y + 1,
+                ..self.pos
+            },
+            Direction::Left => Position {
+                x: self.pos.x - 1,
+                ..self.pos
+            },
+            Direction::Still => self.pos,
         }
     }
 
-    pub fn turn(&mut self, direction: Direction) -> () {
+    pub fn turn(&mut self, direction: Direction) {
         self.direction = direction;
     }
 }
@@ -47,34 +49,38 @@ pub enum Direction {
     Still,
 }
 
+#[derive(Clone)]
 pub struct Snake {
     pub segments: Vec<SnakeSegment>,
 }
 
+#[derive(Copy, Clone, Debug, PartialEq)]
 pub struct Position {
     pub x: usize,
     pub y: usize,
 }
 
 impl Snake {
-    pub fn new(x: usize, y: usize, dir: Direction, length: usize) -> Snake {
-        let mut segments = vec![SnakeSegment::new(x, y, dir)];
+    pub fn new(pos: Position, dir: Direction, length: usize) -> Snake {
+        let mut segments = vec![SnakeSegment::new(pos, dir)];
 
         for _ in 1..length {
-            segments.push(SnakeSegment::new(x, y, Direction::Still));
+            segments.push(SnakeSegment::new(pos, Direction::Still));
         }
 
-        Snake {
-            segments: segments,
-        }
+        Snake { segments }
     }
 
-    pub fn grow(&mut self) -> () {
+    pub fn len(&self) -> usize {
+        self.segments.len()
+    }
+
+    pub fn grow(&mut self) {
         let pos = self.last_segment_pos();
-        self.segments.push(SnakeSegment::new(pos.x, pos.y, Direction::Still));
+        self.segments.push(SnakeSegment::new(pos, Direction::Still));
     }
 
-    pub fn move_fwd(&mut self) -> () {
+    pub fn move_fwd(&mut self) {
         let mut next_dir = None::<Direction>;
 
         for segm in self.segments.iter_mut() {
@@ -95,10 +101,14 @@ impl Snake {
     }
 
     pub fn last_segment_pos(&self) -> Position {
-        self.segments.last().unwrap().pos()
+        self.segments.last().unwrap().pos
     }
 
-    pub fn turn(&mut self, dir: Direction) -> () {
+    pub fn turn(&mut self, dir: Direction) {
         self.segments[0].turn(dir);
+    }
+
+    pub fn is_here(&self, p: &Position) -> bool {
+        self.segments.iter().any(|s| &s.pos == p)
     }
 }

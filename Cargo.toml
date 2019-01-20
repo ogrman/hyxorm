@@ -6,7 +6,5 @@ authors = [ "Lars Ohrman <larohr@gmail.com>" ]
 build = "build.rs"
 
 [dependencies]
-rand = "0.3"
-
-[dependencies.sdl2]
-git = "https://github.com/AngryLawyer/rust-sdl2"
+rand = "0.6.4"
+sdl2 = "0.32.1"

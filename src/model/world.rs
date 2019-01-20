@@ -1,6 +1,9 @@
 use rand;
 
-#[derive(PartialEq)]
+use model::snake::Position;
+use model::snake::Snake;
+
+#[derive(PartialEq, Clone)]
 pub enum CellContent {
     Nothing,
     Wall,
@@ -10,9 +13,9 @@ pub enum CellContent {
 pub struct World {
     pub width: usize,
     pub height: usize,
-    nugget_x: usize,
-    nugget_y: usize,
-    cells: Vec<i32>,
+    nuggets: Vec<Position>,
+    cells: Vec<CellContent>,
+    pub score: usize,
 }
 
 fn index(width: usize, x: usize, y: usize) -> usize {
@@ -22,53 +25,66 @@ fn index(width: usize, x: usize, y: usize) -> usize {
 impl World {
     pub fn new(width: usize, height: usize) -> World {
         let size = (width * height) as usize;
-        let mut cells = vec![0; size];
+        let mut cells = vec![CellContent::Nothing; size];
 
         for y in 0..height {
             for x in 0..width {
                 if x == 0 || y == 0 || x == width - 1 || y == height - 1 {
-                    cells[index(width, x, y)] = 1;
+                    cells[index(width, x, y)] = CellContent::Wall;
                 }
             }
         }
 
         World {
-            width: width,
-            height: height,
-            nugget_x: 0,
-            nugget_y: 0,
-            cells: cells,
+            width,
+            height,
+            nuggets: Vec::new(),
+            cells,
+            score: 0,
         }
     }
 
-    pub fn get_cell(&self, x: usize, y: usize) -> i32 {
-        self.cells[index(self.width, x, y)]
+    pub fn get_cell(&self, p: &Position) -> CellContent {
+        self.cells[index(self.width, p.x, p.y)].clone()
     }
 
-    pub fn check_collision(&self, x: usize, y: usize) -> CellContent {
-        match self.get_cell(x, y) {
-            0 => CellContent::Nothing,
-            1 => CellContent::Wall,
-            2 => CellContent::Nugget,
-            _ => CellContent::Nothing,
+    fn set_cell(&mut self, p: &Position, content: CellContent) {
+        self.cells[index(self.width, p.x, p.y)] = content;
+    }
+
+    pub fn consume_nugget(&mut self, np: &Position) {
+        let maybe_nugget = self.nuggets.drain_filter(|p| p == np);
+        for _ in maybe_nugget {
+            self.score += 1;
+            // Why can't i do this instead???
+            // self.set_cell(&nugget, CellContent::Nothing);
+            self.cells[index(self.width, np.x, np.y)] = CellContent::Nothing;
         }
     }
 
-    pub fn consume_nugget(&mut self) -> () {
-        self.cells[index(self.width, self.nugget_x, self.nugget_y)] = 0;
+    fn count_nothings(&self) -> usize {
+        self.cells.iter().filter(|c| **c == CellContent::Nothing).count()
     }
 
-    pub fn spawn_nugget(&mut self) -> () {
-        'l: loop {
-            let x = rand::random::<usize>() % self.width;
-            let y = rand::random::<usize>() % self.height;
+    pub fn spawn_nugget(&mut self, snake: &Snake, next_pos: Option<&Position>) {
+        let free_cells = (self.count_nothings() - next_pos.iter().count() - snake.len()) as i32;
+        if free_cells >= 1 {
+          'l: loop {
+              let p = Position {
+                  x: rand::random::<usize>() % self.width,
+                  y: rand::random::<usize>() % self.height,
+              };
 
-            if self.check_collision(x, y) == CellContent::Nothing {
-                self.cells[index(self.width, x, y)] = 2;
-                self.nugget_x = x;
-                self.nugget_y = y;
-                break 'l
-            }
+              let is_nothing = self.get_cell(&p) == CellContent::Nothing;
+              let is_snake_here = snake.is_here(&p);
+              let is_next_pos = next_pos.map_or(false, |np| *np == p);
+
+              if is_nothing && !is_snake_here && !is_next_pos {
+                  self.set_cell(&p, CellContent::Nugget);
+                  self.nuggets.push(p);
+                  break 'l;
+              }
+          }
         }
     }
 }
