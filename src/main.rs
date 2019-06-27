@@ -139,7 +139,11 @@ pub fn main() {
         let digit_padding = 5;
         let digit_width = 20;
         canvas.set_draw_color(score_color);
-        for (digit_count, cd) in score_digits.chars().enumerate().map(|(dc, x)| (dc as u32, x)) {
+        for (digit_count, cd) in score_digits
+            .chars()
+            .enumerate()
+            .map(|(dc, x)| (dc as u32, x))
+        {
             let digit = cd.to_digit(10).unwrap();
             let char_vec = fivebyfive::from_digit(digit as usize);
             let digit_offset = digit_count * (digit_width + digit_padding);
@@ -164,11 +168,5 @@ pub fn main() {
 }
 
 fn fill_square<RT: RenderTarget>(canvas: &mut Canvas<RT>, x: i32, y: i32, size: u32) {
-    canvas
-        .fill_rect(Rect::new(
-            x,
-            y,
-            size,
-            size,
-        )).ok();
+    canvas.fill_rect(Rect::new(x, y, size, size)).ok();
 }
