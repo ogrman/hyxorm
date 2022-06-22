@@ -40,15 +40,16 @@ pub fn main() {
                 Event::Quit { .. } |
                 Event::KeyDown { keycode: Some(Keycode::Escape), .. } =>
                     break 'running,
-                Event::KeyDown { keycode: Some(Keycode::Left), .. } =>
-                    snake.turn(Direction::Left),
-                Event::KeyDown { keycode: Some(Keycode::Right), .. } =>
-                    snake.turn(Direction::Right),
-                Event::KeyDown { keycode: Some(Keycode::Up), .. } =>
-                    snake.turn(Direction::Up),
-                Event::KeyDown { keycode: Some(Keycode::Down), .. } =>
-                    snake.turn(Direction::Down),
-                _ => {}
+                Event::KeyDown { keycode: Some(keycode), .. } => {
+                    match keycode {
+                        Keycode::Left => snake.turn(Direction::Left),
+                        Keycode::Right => snake.turn(Direction::Right),
+                        Keycode::Up => snake.turn(Direction::Up),
+                        Keycode::Down => snake.turn(Direction::Down),
+                        _ => {},
+                    }
+                }
+                _ => {},
             }
         }
 
@@ -63,6 +64,7 @@ pub fn main() {
                         if world.has_nugget(np.x, np.y) {
                             world.consume_nugget(&np);
                             score += 1;
+                            println!("Score: {score}");
                             snake.grow();
                             world.spawn_nugget();
                         }
