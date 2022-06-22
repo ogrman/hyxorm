@@ -54,8 +54,14 @@ pub fn main() {
         if tick % 10 == 0 {
             let np = snake.next_head_pos();
 
-            match world.check_collision(np.x, np.y) {
-                CellContent::Nothing => snake.move_fwd(),
+            match world.get_cell(np.x, np.y) {
+                CellContent::Nothing => {
+                    if snake.segments.iter().any(|s| s.x == np.x && s.y == np.y) {
+                        break 'running;
+                    } else {
+                        snake.move_fwd();
+                    }
+                },
                 CellContent::Nugget => {
                     world.consume_nugget();
                     snake.grow();
@@ -76,7 +82,7 @@ pub fn main() {
             for x in 0..world.width {
                 let x_pxl = x as i32 * 32;
                 let y_pxl = y as i32 * 32;
-                match world.check_collision(x, y) {
+                match world.get_cell(x, y) {
                     CellContent::Nugget => {
                         canvas.set_draw_color(nugget_color);
                         canvas.fill_rect(Rect::new(x_pxl, y_pxl, 32, 32)).ok();
