@@ -101,4 +101,8 @@ impl Snake {
     pub fn turn(&mut self, dir: Direction) -> () {
         self.segments[0].turn(dir);
     }
+
+    pub fn contains(&self, p: &Position) -> bool {
+        self.segments.iter().any(|s| s.x == p.x && s.y == p.y)
+    }
 }

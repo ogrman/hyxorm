@@ -26,6 +26,7 @@ pub fn main() {
     let mut canvas = window.into_canvas().present_vsync().build().unwrap();
 
     let mut tick = 0;
+    let mut score = 0;
 
     let mut event_pump = sdl_context.event_pump().unwrap();
 
@@ -56,17 +57,17 @@ pub fn main() {
 
             match world.get_cell(np.x, np.y) {
                 CellContent::Nothing => {
-                    if snake.segments.iter().any(|s| s.x == np.x && s.y == np.y) {
+                    if snake.contains(&np) {
                         break 'running;
                     } else {
+                        if world.has_nugget(np.x, np.y) {
+                            world.consume_nugget(&np);
+                            score += 1;
+                            snake.grow();
+                            world.spawn_nugget();
+                        }
                         snake.move_fwd();
                     }
-                },
-                CellContent::Nugget => {
-                    world.consume_nugget();
-                    snake.grow();
-                    world.spawn_nugget();
-                    snake.move_fwd();
                 },
                 CellContent::Wall => break 'running,
             }
@@ -83,15 +84,16 @@ pub fn main() {
                 let x_pxl = x as i32 * 32;
                 let y_pxl = y as i32 * 32;
                 match world.get_cell(x, y) {
-                    CellContent::Nugget => {
-                        canvas.set_draw_color(nugget_color);
-                        canvas.fill_rect(Rect::new(x_pxl, y_pxl, 32, 32)).ok();
-                    },
                     CellContent::Wall => {
                         canvas.set_draw_color(wall_color);
                         canvas.fill_rect(Rect::new(x_pxl, y_pxl, 32, 32)).ok();
                     },
-                    _ => ()
+                    _ => {
+                        if world.has_nugget(x, y) {
+                            canvas.set_draw_color(nugget_color);
+                            canvas.fill_rect(Rect::new(x_pxl, y_pxl, 32, 32)).ok();
+                        }
+                    }
                 }
             }
         }

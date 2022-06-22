@@ -1,18 +1,18 @@
 use rand;
 
+use super::snake::Position;
+
 #[derive(Clone, Copy, PartialEq)]
 pub enum CellContent {
     Nothing,
     Wall,
-    Nugget,
 }
 
 pub struct World {
     pub width: usize,
     pub height: usize,
-    nugget_x: usize,
-    nugget_y: usize,
     cells: Vec<CellContent>,
+    nuggets: Vec<Position>,
 }
 
 fn index(width: usize, x: usize, y: usize) -> usize {
@@ -33,11 +33,10 @@ impl World {
         }
 
         World {
-            width: width,
-            height: height,
-            nugget_x: 0,
-            nugget_y: 0,
-            cells: cells,
+            width,
+            height,
+            cells,
+            nuggets: Default::default(),
         }
     }
 
@@ -45,8 +44,19 @@ impl World {
         self.cells[index(self.width, x, y)]
     }
 
-    pub fn consume_nugget(&mut self) -> () {
-        self.cells[index(self.width, self.nugget_x, self.nugget_y)] = CellContent::Nothing;
+    pub fn has_nugget(&self, x: usize, y: usize) -> bool {
+        self.nuggets.iter().any(|n| n.x == x && n.y == y)
+    }
+
+    pub fn consume_nugget(&mut self, p: &Position) {
+        if let Some((to_remove, _)) = self
+            .nuggets
+            .iter()
+            .enumerate()
+            .find(|(_, n)| n.x == p.x && n.y == p.y)
+        {
+            self.nuggets.remove(to_remove);
+        }
     }
 
     pub fn spawn_nugget(&mut self) -> () {
@@ -54,10 +64,8 @@ impl World {
             let x = rand::random::<usize>() % self.width;
             let y = rand::random::<usize>() % self.height;
 
-            if self.get_cell(x, y) == CellContent::Nothing {
-                self.cells[index(self.width, x, y)] = CellContent::Nugget;
-                self.nugget_x = x;
-                self.nugget_y = y;
+            if self.get_cell(x, y) == CellContent::Nothing && !self.has_nugget(x, y) {
+                self.nuggets.push(Position { x, y });
                 break 'l
             }
         }
